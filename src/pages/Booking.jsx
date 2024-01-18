@@ -10,45 +10,117 @@ import { MdEmail } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
+import Card from "./Card.jsx"
 
 export const Booking = () => {
   // student or instructor
 
+ 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
     address: "",
-    query: "",
-  });
+    phonenumber:""
+  })
 
-  const { firstName, lastName, email, address, query } = formData;
+  const { firstname, lastname, email, address, phonenumber } = formData
 
   // Handle input fields, when some value changes
+
+
+  // Handle Form Submission
+  const handleOnSubmit = async (e) => {
+    if (!firstname || !lastname || !email || !address || !phonenumber) {
+      return;
+    }
+    e.preventDefault()
+
+    try {
+      const  response =  await axios.post("http://localhost:5000/vistuser" ,{
+      firstname,
+      lastname,
+      email,
+      address,
+      phonenumber
+   }
+);
+   
+if (response.status === 200) {
+  console.log("booking detail submitted successfully!");
+} else {
+  console.error("Failed to submit booking detail.");
+}
+
+    } catch (error) {
+      console.error("Error submitting booking detail:", error);
+    }
+   
+    // Reset
+    // setFormData({
+    //   firstname: "",
+    //   lastname: "",
+    //   email: "",
+    //   address: "",
+    //   phonenumber: "",
+    // })
+  }
+
+  const checkoutHandler = async (amount) => {
+
+     const {data:{key}} = await axios.get("http://localhost:5000/api/getkey")
+    const { data:{order}} = await axios.post("http://localhost:5000/api/checkout", {amount
+    })
+
+  const options = {
+    key,
+    amount: order.amount, 
+    currency: "INR",
+    name: "XXXXXXXXXXX",
+    description: "Test Transaction",
+    image: "",
+    order_id: order.id, 
+    callback_url: "http://localhost:5000/api/paymentverification",
+    notes: {
+      "email": email,
+      "firstname" :firstname,
+       "lastname": lastname,
+        "email":email, 
+       "address":address,
+      "phonenumber" : phonenumber
+
+  },
+  
+    theme: {
+        "color": "#3399cc"
+    }
+};
+
+  const razor  = new window.Razorpay(options);
+  
+  razor.on('payment.failed', function (response){
+  alert(response.error.code);
+  alert(response.error.description); 
+  alert(response.error.source);
+  alert(response.error.step);
+  alert(response.error.reason);
+  alert(response.error.eetadata.order_10);
+   alert(response.error.metadata.payment_id);
+  });
+
+  // document.getElementById('rzp-button1").onclick = function(e){
+      razor.open();
+  // e.preventDefault();
+    // } 
+  }
+  
+
   const handleOnChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
-    }));
-  };
-
-  const postReq = async (formData) => {
-    const res = await axios.post("http://localhost:4000/query", { formData });
-  };
-  // Handle Form Submission
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-    postReq(formData);
-    // Reset
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      address: "",
-      query: "",
-    });
-  };
+    }))
+  }
 
   return (
     <div className="w-full overflow-hidden relative">
@@ -71,18 +143,17 @@ export const Booking = () => {
                     <div className="bg-white p-2 flex flex-row items-center mr-2  rounded-md">
                     <FaUser className="text-black mr-2" />
                     <input
-                      required
-                      type="text"
-                      name="firstName"
-                      value={firstName}
-                      onChange={handleOnChange}
-                      placeholder="Enter first name"
-                      style={{
-                        boxShadow:
-                          "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-                      }}
-                      className="w-full rounded-[0.5rem]   p-1 outline-none "
-                    />
+  required
+  type="text"
+  name="firstname"  // Change this to "firstname"
+  value={firstname}
+  onChange={handleOnChange}
+  placeholder="Enter first name"
+  style={{
+    boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
+  }}
+  className="w-full rounded-[0.5rem] p-1 outline-none "
+/>
                     </div>
                   </label>
                   <label>
@@ -91,19 +162,19 @@ export const Booking = () => {
                     </p>
                     <div className="bg-white p-2 flex flex-row items-center mr-2  rounded-md">
                     <FaUser className="text-black mr-2" />
-                    <input
-                      required
-                      type="text"
-                      name="lastName"
-                      value={lastName}
-                      onChange={handleOnChange}
-                      placeholder="Enter last name"
-                      style={{
-                        boxShadow:
-                          "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-                      }}
-                      className="w-full rounded-[0.5rem]  p-1 outline-none "
-                    />
+                    
+<input
+  required
+  type="text"
+  name="lastname"  // Change this to "lastname"
+  value={lastname}
+  onChange={handleOnChange}
+  placeholder="Enter last name"
+  style={{
+    boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
+  }}
+  className="w-full rounded-[0.5rem] p-1 outline-none "
+/>
                     </div>
                   </label>
                   
@@ -155,20 +226,20 @@ export const Booking = () => {
               <div className=" h-full ">
                 <label className=" h-full">
                   <p className="mb-1 text-[0.875rem] font-semibold leading-[1.375rem] text-richblack-5">
-                    Query <sup className="text-pink-200">*</sup>
+                    Phone No. <sup className="text-pink-200">*</sup>
                   </p>
-                  <textarea
-                    required
-                    type="text"
-                    name="query"
-                    value={query}
-                    onChange={handleOnChange}
-                    placeholder="Enter query"
-                    style={{
-                      boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-                    }}
-                    className="w-full h-56      rounded-[0.5rem]  p-[12px]  text-black outline-none"
-                  />
+                  <input
+                required
+                type="text"
+                  name="phonenumber"  // Change this to "phonenumber"
+                 value={phonenumber}
+                 onChange={handleOnChange}
+                 placeholder="Phone No."
+    style={{
+        boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
+    }}
+    className="w-full h-56 rounded-[0.5rem] p-[12px] text-black outline-none"
+/>
                 </label>
               </div>
             </div>
@@ -179,7 +250,7 @@ export const Booking = () => {
                 className="mt-6  rounded-[8px] bg-[#3EC70B] p-1 py-[12px] px-[14px] font-medium text-white"
                 onClick={handleOnSubmit}
               >
-                Book your kit Now
+                   < Card amount={100} checkoutHandler ={checkoutHandler} />
               </button>
             </div>
           </form>

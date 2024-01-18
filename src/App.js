@@ -6,6 +6,7 @@ import { Booking } from "./pages/Booking";
 import { ContactUs } from "./pages/ContactUs";
 import { Product } from "./pages/Product";
 import { Footer } from "./components/Footer";
+import PaymentSuccess from "./pages/paymentSuccess";
 const App = () => {
   
   return(
@@ -16,6 +17,7 @@ const App = () => {
       <Route path="/product" element={<Product/>}/>
       <Route path="/booking" element={<Booking/>}/>
       <Route path="/ContactUs" element={<ContactUs/>}/>
+      <Route path="/paymentsuccess" element={< PaymentSuccess />}   />
     </Routes>
     <Footer/>
     

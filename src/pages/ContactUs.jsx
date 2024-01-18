@@ -6,7 +6,7 @@ import { ContactCompany } from "../components/ContactCompany"
 import { MdEmail } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
-
+import axios from "axios"
 
  export const ContactUs=()=> {
   
@@ -35,21 +35,36 @@ import { FaUser } from "react-icons/fa";
   }
 
   // Handle Form Submission
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-    // mailer();
-
+  
+    try {
+      const response = await axios.post("http://localhost:5000/register", {
+        name: firstName,
+        lastname: lastName,
+        email,
+        address,
+        query,
+      });
+  
+      if (response.status === 200) {
+        console.log("Query submitted successfully!");
+      } else {
+        console.error("Failed to submit query.");
+      }
+    } catch (error) {
+      console.error("Error submitting query:", error);
+    }
+  
     
-    // Reset
     setFormData({
       firstName: "",
       lastName: "",
       email: "",
-      password: "",
-      confirmPassword: "",
-    })
-    
-  }
+      address: "",
+      query: "",
+    });
+  };
 
 
 
