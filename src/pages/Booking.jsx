@@ -11,6 +11,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
 import Card from "./Card.jsx"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Booking = () => {
   // student or instructor
@@ -56,14 +58,7 @@ if (response.status === 200) {
       console.error("Error submitting booking detail:", error);
     }
    
-    // Reset
-    // setFormData({
-    //   firstname: "",
-    //   lastname: "",
-    //   email: "",
-    //   address: "",
-    //   phonenumber: "",
-    // })
+   
   }
 
   const checkoutHandler = async (amount) => {
@@ -98,20 +93,38 @@ if (response.status === 200) {
 
   const razor  = new window.Razorpay(options);
   
-  razor.on('payment.failed', function (response){
-  alert(response.error.code);
-  alert(response.error.description); 
-  alert(response.error.source);
-  alert(response.error.step);
-  alert(response.error.reason);
-  alert(response.error.eetadata.order_10);
-   alert(response.error.metadata.payment_id);
+  // razor.on('payment.failed', function (response){
+  // alert(response.error.code);
+  // alert(response.error.description); 
+  // alert(response.error.source);
+  // alert(response.error.step);
+  // alert(response.error.reason);
+  // alert(response.error.eetadata.order_10);
+  //  alert(response.error.metadata.payment_id);
+  // });
+
+  razor.on('payment.failed', function (response) {
+    toast.error(`Error Code: ${response.error.code}`);
+    toast.error(`Error Description: ${response.error.description}`);
+    toast.error(`Error Source: ${response.error.source}`);
+    toast.error(`Error Step: ${response.error.step}`);
+    toast.error(`Error Reason: ${response.error.reason}`);
+    toast.error(`Error Metadata Order_10: ${response.error.eetadata.order_10}`);
+    toast.error(`Error Metadata Payment_ID: ${response.error.metadata.payment_id}`);
   });
 
   // document.getElementById('rzp-button1").onclick = function(e){
       razor.open();
   // e.preventDefault();
     // } 
+    //  Reset
+    setFormData({
+      firstname: "",
+      lastname: "",
+      email: "",
+      address: "",
+      phonenumber: "",
+    })
   }
   
 
