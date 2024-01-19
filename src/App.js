@@ -8,7 +8,7 @@ import { Product } from "./pages/Product";
 import { Footer } from "./components/Footer";
 import PaymentSuccess from "./pages/paymentSuccess";
 const App = () => {
-  
+  const media = { mobile: "768px", tab: "998px" };
   return(
     <div className="relative overflow-x-hidden">
     <Navbar />
